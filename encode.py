@@ -9,12 +9,19 @@ def printlist(name,l):
         print(";",end='')
     print(l[-1],end='')
     print(").")
-print("HEY")
+
+if len(sys.argv)!=3:
+    print("encode.py inputfile outputfile")
+    sys.exit()
+
+f = open(sys.argv[1], "r")
+out = open(sys.argv[2], "w")
+sys.stdout = out
 n=0
 i=0
 blacks=[]
 whites=[]
-for line in sys.stdin:
+for line in f:
     l = line.split()
     if n==0:
         n=len(l)
@@ -28,3 +35,5 @@ for line in sys.stdin:
 print(f"#const n={n}.")
 printlist("black",blacks)
 printlist("white",whites)
+f.close()
+out.close()
