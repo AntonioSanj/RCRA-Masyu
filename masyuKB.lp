@@ -2,10 +2,11 @@
 % no puedes tener una posicion a uno de una bola negra q si sea codo
 
 % python encode.py examples/masyu02.txt masyu02.lp
+% python display.py masyuKB.lp stair.lp drawmasyu.lp
 
 % problem data
-#const n=4.
-black(0;5;10;15).
+%#const n=4.
+%black(0;5;10;15).
 
 row(0..n-1).
 col(0..n-1).
