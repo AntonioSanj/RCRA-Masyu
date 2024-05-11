@@ -9,17 +9,19 @@ if len(sys.argv)<2:
 
 # Loading files and grounding
 ctl = clingo.Control()
+ctl.add("base", [], "size(n).")
 for arg in sys.argv[1:]:
     ctl.load(arg)
 ctl.ground([("base", [])])
+ctl.configuration.solve.models="0"
 
 # Solving    
 size=0
-edges=[]
-blacks=[]
-whites=[]
 with ctl.solve(yield_=True) as handle:
   for model in handle:
+      edges=[]
+      blacks=[]
+      whites=[]
       for atom in model.symbols(atoms=True):
           if (atom.name=="size" 
           and len(atom.arguments)==1 
@@ -57,4 +59,6 @@ with ctl.solve(yield_=True) as handle:
             print(el,end='')
          print()
         
-      exit()
+      print("----------")
+
+

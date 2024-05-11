@@ -3,6 +3,7 @@
 
 % python encode.py examples/masyu02.txt masyu02.lp
 % python display.py masyuKB.lp stair.lp drawmasyu.lp
+% python decode.py masyuKB.lp masyu02.lp > solution02.txt
 
 % problem data
 %#const n=4.
@@ -22,7 +23,6 @@ adj( (X,Y), (X + 1,Y)) :- row(X), col(Y), row(X + 1).
 
 {edge(X,Y)} :- adj(X,Y). %generar posibles aristas
 edge(X,Y) :- edge(Y,X). % en los dos sentidos
-seg(P,P') :- edge(P,P'), P<P'. % para en el diplay mostrar solo una arista
 
 marked(P) :- edge(P,_). % marcar todos los puntos como visitados
 
@@ -40,8 +40,8 @@ marked(P) :- edge(P,_). % marcar todos los puntos como visitados
 %   (X2,Y2)    P    (X1,Y1)
 %      O - - - O - - - 0
 %
-recto_h(P) :- marked(P), edge (P, (X1, Y1)), edge ((X2, Y2), P), |Y2-Y1| == 2. % rectos horizontalmente
-recto_v(P) :- marked(P), edge (P, (X1, Y1)), edge ((X2, Y2), P), |X2-X1| == 2. % rectos verticalmente
+recto_h(P) :- marked(P), edge (P, (X1, Y1)), edge ((X2, Y2), P), Y1-Y2 == 2. % rectos horizontalmente
+recto_v(P) :- marked(P), edge (P, (X1, Y1)), edge ((X2, Y2), P), X1-X2 == 2. % rectos verticalmente
 
 % obtenemos puntos que son esquina (los que no son rectos)
 codo(P) :- marked(P), not recto_h(P), not recto_v(P).
@@ -53,6 +53,9 @@ codo(P) :- marked(P), not recto_h(P), not recto_v(P).
 :- marked(P), not codo(P), blackCoor(P).
 
 
+% para en el diplay mostrar solo una arista
+aux(P,P') :- edge(P,P'), P<P'. 
+seg(X1*n+Y1,X2*n+Y2) :- aux((X1,Y1),(X2,Y2)).
 
 
 
