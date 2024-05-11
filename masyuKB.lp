@@ -21,8 +21,11 @@ adj( (X,Y), (X + 1,Y)) :- row(X), col(Y), row(X + 1).
 
 {edge(X,Y)} :- adj(X,Y). %generar posibles aristas
 edge(X,Y) :- edge(Y,X). % en los dos sentidos
+seg(P,P') :- edge(P,P'), P<P'. % para en el diplay mostrar solo una arista
 
 marked(P) :- edge(P,_). % marcar todos los puntos como visitados
+
+
 
 % dado un punto eliminar casos en los que tiene un numero distinto de dos aristas
 :- marked(P), #count{P':edge(P,P')}!=2.
@@ -49,13 +52,7 @@ codo(P) :- marked(P), not recto_h(P), not recto_v(P).
 :- marked(P), not codo(P), blackCoor(P).
 
 
-%camino es conjunto de aristas
-{in(X,Y) : edge(X,Y)}.
 
-reach(X,Y) :- in(X,Y).
-reach(X,Z) :- reach(X,Y), in(Y,Z).
-
-:- marked(X), marked(Y),not reach(X,Y).
 
 
 
