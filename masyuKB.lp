@@ -1,25 +1,19 @@
-% usar predicado nodos marcados, predicado es codo
-% no puedes tener una posicion a uno de una bola negra q si sea codo
-
-% python encode.py examples/masyu02.txt masyu02.lp
+% python encode.py examples/masyu02.txt encodes/masyu02.lp
 % python display.py masyuKB.lp stair.lp drawmasyu.lp
-% python decode.py masyuKB.lp masyu02.lp > solution02.txt
+% python decode.py masyuKB.lp encodes/masyu02.lp > solution/masyu2.txt
 
-% problem data
-%#const n=4.
-%black(0;5;10;15).
 
 row(0..n-1).
 col(0..n-1).
 
-% traduccion blancos y negros a coordenadas
+% traduccion blancos y negros a coordenadas por comodidad
 blackCoor((Y,X\n)) :- black(X), X/n=Y.
 whiteCoor((Y,X\n)) :- white(X), X/n=Y.
 
 % crear adyacencia horizontal, no se crea si no existe una columna a la derecha
-adj( (X,Y), (X,Y + 1)) :- row(X), col(Y), col(Y + 1).
+adj((X,Y), (X,Y + 1)) :- row(X), col(Y), col(Y + 1).
 % crear adyacencia vertical, no se crea si no existe una fila debajo
-adj( (X,Y), (X + 1,Y)) :- row(X), col(Y), row(X + 1).
+adj((X,Y), (X + 1,Y)) :- row(X), col(Y), row(X + 1).
 
 {edge(X,Y)} :- adj(X,Y). %generar posibles aristas
 edge(X,Y) :- edge(Y,X). % en los dos sentidos
@@ -52,21 +46,28 @@ codo(P) :- marked(P), not recto_h(P), not recto_v(P).
 %los negros deben ser esquina
 :- marked(P), not codo(P), blackCoor(P).
 
-reach(X) :- M = #min{B: marked(B)}, edge (X, M).
-reach(X) :- edge (X, Y), reach(Y).
-% Si se usa un punto ha de poder alcanzar la bola mjínima
-:- marked (P), not reach (P).
 
+% el bucle debe ser único
+% elegimos un punto al azar (minimo) y definimos su alcance
+reach(X) :- M = #min{B: marked(B)}, edge (X, M).
+% marcamos todos los puntos que alcanza el punto original mediante recursividad
+reach(X) :- edge (X,Y), reach(Y).
+% si queda algun punto marcado no alcanzable se elimina ese caso
+:- marked (P), not reach (P).
 
 % para en el diplay mostrar solo una arista
 aux(P,P') :- edge(P,P'), P<P'. 
+% blancos deben torcer al menos una vez
+:- marked(P), whiteCoor(P), not codo(P), aux(IZQ,P), aux(P,DER), not codo(IZQ), not codo(DER).
+
+% los vecinos de los negros deben ser rectas
+:- marked(P), blackCoor(P), aux(P1, P), codo(P1).
+:- marked(P), blackCoor(P), aux(P, P2), codo(P2).
+
+
+
+
 seg(X1*n+Y1,X2*n+Y2) :- aux((X1,Y1),(X2,Y2)).
-
-
-
-
-
-
 
 
 
