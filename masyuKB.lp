@@ -52,6 +52,11 @@ codo(P) :- marked(P), not recto_h(P), not recto_v(P).
 %los negros deben ser esquina
 :- marked(P), not codo(P), blackCoor(P).
 
+reach(X) :- M = #min{B: marked(B)}, edge (X, M).
+reach(X) :- edge (X, Y), reach(Y).
+% Si se usa un punto ha de poder alcanzar la bola mjínima
+:- marked (P), not reach (P).
+
 
 % para en el diplay mostrar solo una arista
 aux(P,P') :- edge(P,P'), P<P'. 
